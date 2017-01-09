@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js Bar Chart</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <style>
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: #666;
+            stroke-width: 1px;
+        }
+        .axis text{
+            color: #444;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<script>
+    /*step1: svg */
+    var W = 800;
+    var H = 400;
+
+    var svg = d3.select('body')
+        .append('svg')
+        .attr('width', W)
+        .attr('height', H)
+
+    var padding = {
+        left: 30,
+        right: 30,
+        top: 20,
+        bottom: 20
+    }
+
+    /* step2: data scale */
+    var dataset = [20, 40, 35, 65, 25, 30];
+
+    //y axis
+    var yScale = d3.scale.linear()
+        .domain([0, d3.max(dataset)])
+        .range([H - padding.top - padding.bottom, 0]);
+
+    //x axis
+    var xScale = d3.scale.ordinal()
+        .domain(d3.range(dataset.length))
+        .rangeRoundBands([0,W - padding.left - padding.right]);
+
+    /*step3: axis */
+    var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient('bottom');
+
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient('left');
+
+
+    /* step4 :bar */
+    var rectPadding = 5;
+    var rects = svg.selectAll('.rect')
+        .data(dataset)
+        .enter()
+        .append('rect')
+        .attr('class','rect')
+        .attr('x',function (d,i) {
+            return xScale(i) + rectPadding/2
+        })
+        .attr("y",function (d) {
+            return yScale(d);
+        })
+        .attr('width',xScale.randBand() - rectPadding)
+        .attr('height',function (d) {
+            return H - padding.top - padding.bottom - yScale(d);
+        });
+
+    svg.append('g')
+        .attr('class', 'axis')
+        .call(xAxis)
+
+    svg.append('g')
+        .attr('class', 'axis')
+        .call(yAxis)
+
+
+</script>
+</body>
+</html>

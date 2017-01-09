@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js helloWorld</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<body>
+<div class="content">
+    <p></p>
+    <p id="#dot"></p>
+    <p></p>
+</div>
+<div class="btns">
+    <button id="changeText">change text</button>
+    <button id="append">append</button>
+    <button id="insert">insert</button>
+    <button id="remove">remove</button>
+    <button id="removeAll">remove all</button>
+</div>
+<script>
+    var p = d3.select("body").selectAll('p').text('Hello World');
+    p.each(function () {
+        d3.select(this).style('color', randomColor())
+    })
+
+    d3.select('#changeText').on('click', function () {
+        var arrs = ['Vans', 'Converse', 'Keds'];
+        p.data(arrs).text(function (d, i) {
+            return `${i}. I'm ${d}.`
+        })
+    })
+
+    d3.select('#append').on('click', function () {
+        d3.select('.content').append('p').text(randomColor()).style('color', randomColor());
+    })
+
+    d3.select('#insert').on('click', function () {
+        d3.select('.content').insert('p',':first-child').text(randomColor()).style('color', randomColor());
+    })
+
+    d3.select('#remove').on('click', function () {
+        d3.select('.content p').remove();
+    })
+
+    d3.select('#removeAll').on('click', function () {
+        d3.selectAll('.content p').remove();
+    })
+
+    function randomColor() {
+        return '#' + parseInt(Math.random() * (255 * 255 * 255)).toString(16)
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js Simple Chart</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+<svg>
+</svg>
+<script>
+    var svg = d3.select('svg')
+        .attr('width', 400)
+        .attr('height', 300);
+
+    var dataset = [170, 145, 25, 45, 120, 95];
+    var barH = 30;
+    svg.selectAll('rect').data(dataset)
+        .enter().append('rect')
+        .attr('x', 20)
+        .attr('y', function (d, i) {
+            return i * barH;
+        })
+        .attr('width', function (d, i) {
+            return d;
+        })
+        .attr('height', barH - 2)
+        .attr('fill', '#09e')
+
+
+</script>
+
+</body>
+</html>
