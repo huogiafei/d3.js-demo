@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chord Diagram</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+<svg width="800" height="400" id="stage"></svg>
+<script>
+    var svg = d3.select('#stage')
+
+    var city_name = ['北京', '上海', '广州', '深圳', '香港']
+
+    var population = [
+        [1000, 3045, 4567, 1234, 3714],
+        [3214, 2000, 2060, 124, 3234],
+        [8761, 6545, 3000, 8045, 647],
+        [3211, 1067, 3214, 4000, 1006],
+        [2146, 1034, 6745, 4764, 5000]
+    ];
+
+    var chord_layout = d3.layout.chord()
+        .padding(.03)
+        .sortSubgroups(d3.descending)
+        .matrix(population);
+
+    var groups = chord_layout.groups();
+    var chords = chord_layout.chords();
+
+    console.log(groups)
+    console.log(chords)
+
+    var width = 400;
+    var height = 400;
+    var innerRadius = width / 2 * 0.7;
+    var outerRadius = innerRadius * 1.1;
+
+    var color20 = d3.scale.category20();
+
+    /* outer */
+    var outer_arc = d3.svg.arc()
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius);
+
+    var g_outer = svg.append('g').attr('transform', `translate(400,200)`);
+
+    g_outer.selectAll('path')
+        .data(groups)
+        .enter()
+        .append('path')
+        .style('fill', function (d) {
+            return color20(d.index)
+        })
+        .style('stroke', function (d) {
+            return color20(d.index)
+        })
+        .attr('d', outer_arc);
+
+    g_outer.selectAll('text')
+        .data(groups)
+        .enter()
+        .append('text')
+        .each(function (d, i) {
+            d.angle = (d.startAngle + d.endAngle) / 2
+            d.name = city_name[i];
+        })
+        .attr('dy', '.35em')
+        .text(function (d) {
+            return d.name;
+        })
+        .attr('transform', function (d) {
+            var textRotate = d.angle > Math.PI * 3 / 4 && d.angle < Math.PI * 5 / 4 ? 'rotate(180)' : '';
+            return `rotate(${d.angle * 180 / Math.PI})
+                translate(0,${-1.0 * (outerRadius + 10)}) ${textRotate}`
+        })
+
+    /* chord */
+    var inner_chord = d3.svg.chord().radius(innerRadius);
+    svg.append('g')
+        .attr('transform', `translate(400,200)`)
+        .attr('class','chord')
+        .selectAll('path')
+        .data(chords)
+        .enter()
+        .append('path')
+        .attr('d',inner_chord)
+        .style('fill',function(d){
+            return color20(d.source.index);
+        })
+        .style('stroke','#ddd')
+        .style('stroke-width',1)
+</script>
+</body>
+</html>
