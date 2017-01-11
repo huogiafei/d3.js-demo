@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upadte_Enter_Exit</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <style>
+        .wrap{
+            margin-right: 20px;
+            float: left;
+        }
+    </style>
+</head>
+
+<body>
+<div id="wrap1" style="color: #09e;" class="wrap">
+    <p></p>
+    <p></p>
+    <p></p>
+</div>
+<div id="wrap2" style="color: #0c9;" class="wrap">
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <button id="remove">remove exit</button>
+</div>
+
+
+<script>
+    /* update  & enter */
+    var dataset = [1, 3, 6, 2, 9, 5];
+    var p = d3.select('#wrap1').selectAll('p');
+
+    var update = p.data(dataset);
+    var enter = update.enter();
+
+    update.text(function (d) {
+        return 'update : ' + d;
+    })
+
+    enter.append('p')
+        .text(function (d, i) {
+            return 'enter : ' + d;
+        })
+
+    /*update  & exit*/
+    var dataset2 = [1, 2, 3];
+    var p2 = d3.select('#wrap2').selectAll('p');
+    var update2 = p2.data(dataset2);
+    var exit = update2.exit();
+
+    update2.text(function (d) {
+        return 'update:' + d
+    })
+
+
+    exit.text(function (d, i) {
+        console.log(d)
+        return 'exit : no value'
+    })
+
+    d3.select('#remove').on('click',function () {
+        exit.remove();
+    })
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pie Chart</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+<svg width="800" height="400" id="stage"></svg>
+<script>
+    var svg = d3.select('#stage');
+
+    var dataset = [53,48,23,12,69];
+    var pie = d3.layout.pie();
+    var pieData = pie(dataset);
+
+    var outerRadius = 150;
+    var innerRadius = 0;
+
+    var arc = d3.svg.arc()
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius);
+
+    var width = 800;
+    var height = 400;
+
+    var arcs = svg.selectAll('g')
+        .data(pieData)
+        .enter()
+        .append('g')
+        .attr('transform',`translate(${width/2},${height/2})`);
+
+    var color = d3.scale.category20();
+
+    /* pie */
+    arcs.append('path')
+        .attr('fill',function (d,i) {
+            return color(i);
+        })
+        .attr('d',function (d) {
+            return arc(d);
+        })
+
+    /* pie text */
+    arcs.append('text')
+        .attr('transform',function (d) {
+            console.log(arc.centroid(d));
+            return `translate(${arc.centroid(d)})`
+        })
+        .attr('text-anchor','middle')
+        .text(function(d){
+            return d.data
+        })
+        .attr('fill','#fff')
+</script>
+</body>
+</html>

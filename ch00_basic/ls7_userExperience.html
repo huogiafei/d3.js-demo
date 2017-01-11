@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Experience</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <style>
+        #stage circle{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<svg width="800" height="400" id="stage"></svg>
+<script>
+    var svg = d3.select('#stage');
+    var circle = svg.append('circle')
+        .attr('cx',30)
+        .attr('cy',30)
+        .attr('r',26)
+        .attr('fill','#fc1')
+
+    circle.on('click',function () {
+        d3.select(this)
+            .transition()
+            .duration(1500)
+            .attr('cx',300)
+            .attr('cy',200)
+            .attr('fill','#ff9454')
+            .attr('r',1200)
+            .style('cursor','default')
+        rects.transition()
+            .duration(1000)
+            .ease('linear')
+            .attr('fill','#f1f1f1')
+        texts.transition()
+            .duration(1000)
+            .ease('linear')
+            .attr('fill','#333')
+    })
+
+    var dataset = [1,2,3,4,5]
+    var scale = d3.scale.linear()
+        .domain([0,d3.max(dataset)])
+        .range([0,400])
+
+    /*rect*/
+    var rects = svg.append('g').attr('id','bar-group')
+        .attr('transform','translate(50,50)')
+        .selectAll('rect').data(dataset)
+        .enter()
+        .append('rect')
+        .attr('x',20)
+        .attr('y',function (d,i) {
+            return i*30
+        })
+        .attr('height',26)
+        .attr('width',function (d,i) {
+            return scale(d)
+        })
+        .attr('fill','#666')
+
+    /* text */
+    var texts = svg.append('g').attr('id','text-group')
+        .attr('transform','translate(50,50)')
+        .selectAll('.text').data(dataset)
+        .enter()
+        .append('text')
+        .attr('x',function (d,i) {
+            return scale(d) - 10;
+        })
+        .attr('y',function (d,i) {
+            return i * 30 + 18
+        })
+        .text(function (d) {
+            return d;
+        })
+        .attr('fill','#f1f1f1')
+
+    rects.on('mouseover',function () {
+        d3.select(this)
+            .transition()
+            .duration(300)
+            .attr('fill-opacity',0.8)
+    })
+
+    rects.on('mouseout',function () {
+        d3.select(this)
+            .transition()
+            .duration(300)
+            .attr('fill-opacity',1)
+    })
+
+</script>
+</body>
+</html>

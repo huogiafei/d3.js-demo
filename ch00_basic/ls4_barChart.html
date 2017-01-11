@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js Bar Chart</title>
+    <!-- d3.js  -->
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <!-- highchart -->
+    <script src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+    <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+    <script src="http://cdn.hcharts.cn/highcharts/themes/gray.js"></script>
+
+    <style>
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: #0e4285;
+            stroke-width: 2px;
+        }
+        .axis text{
+            fill: #666;
+            font-size: 14px;
+        }
+        #d3 rect{
+            fill: #56bae7
+        }
+    </style>
+</head>
+<body>
+<script>
+    /*step1: svg */
+    var W = 800;
+    var H = 400;
+
+    var svg = d3.select('body')
+        .append('svg')
+        .attr('width', W)
+        .attr('height', H)
+        .attr('id','d3')
+
+    var padding = {
+        left: 30,
+        right: 30,
+        top: 20,
+        bottom: 20
+    }
+
+    /* step2: data scale */
+    var dataset = [20, 40, 35, 65, 25, 30];
+
+    //y axis
+    var yScale = d3.scale.linear()
+        .domain([0, d3.max(dataset)])
+        .range([H - padding.top - padding.bottom, 0]);
+
+    //x axis
+    var xScale = d3.scale.ordinal()
+        .domain(d3.range(dataset.length))
+        .rangeRoundBands([0,W - padding.left - padding.right]);
+
+    /*step3: axis */
+    var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient('bottom');
+
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient('left');
+
+
+    /* step4 :bar */
+    var rectPadding = 20;
+    var rects = svg.selectAll('.rect')
+        .data(dataset)
+        .enter()
+        .append('rect')
+        .attr('transform',`translate(${padding.left},${padding.top})`)
+        .attr('class','rect')
+        .attr('x',function (d,i) {
+            return xScale(i) + rectPadding/2
+        })
+        .attr("y",function (d) {
+            return yScale(d);
+        })
+        .attr('width',xScale.rangeBand() - rectPadding)
+        .attr('height',function (d) {
+            return H - padding.top - padding.bottom - yScale(d);
+        });
+
+    svg.append('g')
+        .attr('class', 'axis')
+        .attr('transform',`translate(${padding.left},${H-padding.bottom})`)
+        .call(xAxis)
+
+    svg.append('g')
+        .attr('class', 'axis')
+        .attr('transform',`translate(${padding.left},${padding.top})`)
+        .call(yAxis)
+
+
+</script>
+<!-- highChart -->
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<script>
+    $(function () {
+        Highcharts.chart('container', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'HighChart'
+            },
+            subtitle: {
+                text: 'Simple Bar Chart'
+            },
+            xAxis: {
+                categories: [
+                    'Jan',
+                    'Feb',
+                    'Mar',
+                    'Apr',
+                    'May',
+                    'Jun',
+                    'Jul',
+                    'Aug',
+                    'Sep',
+                    'Oct',
+                    'Nov',
+                    'Dec'
+                ],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Rainfall (mm)'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Tokyo',
+                data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+
+            }]
+        });
+    });
+</script>
+</body>
+</html>

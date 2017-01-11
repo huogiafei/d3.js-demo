@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transition</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+<svg width="800" height="400" id="stage"  ></svg>
+<script>
+    var svg = d3.select('#stage');
+    var circle_1 = svg.append('circle')
+        .attr('cx',50)
+        .attr('cy',100)
+        .attr('r',45)
+        .attr('fill','#90ee95')
+
+    circle_1.transition()
+        .duration(1000)
+        .attr('cx',200)
+        .attr('fill','#5ad0ee')
+        .attr('r',30)
+
+    var dataset = [4,2,8,10,3,5]
+    var yScale = d3.scale.linear()
+        .domain([0,d3.max(dataset)])
+        .range([0,700]);
+
+    var rect = svg.selectAll('rect').data(dataset)
+        .enter()
+        .append('rect')
+        .attr('transform',`translate(260,0)`)
+        .attr('x',20)
+        .attr('y',function (d,i) {
+            return 30*i
+        })
+        .attr('height',20)
+
+        .attr('width',function(d,i){
+            var min = yScale.domain()[0];
+            return yScale(min);
+        })
+        .attr('fill','#09e')
+        .attr('fill-opacity','.4')
+        .transition()
+        .duration(1000)
+        .attr('width',function (d,i) {
+            return yScale(d)
+        })
+        .attr('fill-opacity','1')
+
+</script>
+</body>
+</html>
